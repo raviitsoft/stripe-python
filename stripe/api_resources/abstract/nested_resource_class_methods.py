@@ -4,11 +4,15 @@ from stripe import api_requestor, util
 from stripe.six.moves.urllib.parse import quote_plus
 
 
-def nested_resource_class_methods(resource, path=None, operations=None):
+def nested_resource_class_methods(
+    resource, path=None, operations=None, resource_method_name=None
+):
     if path is None:
         path = "%ss" % resource
     if operations is None:
         raise ValueError("operations list required")
+    if resource_method_name is None:
+        resource_method_name = resource
 
     def wrapper(cls):
         def nested_resource_url(cls, id, nested_id=None):
@@ -57,7 +61,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
                         "post", url, **params
                     )
 
-                create_method = "create_%s" % resource
+                create_method = "create_%s" % resource_method_name
                 setattr(
                     cls, create_method, classmethod(create_nested_resource)
                 )
@@ -70,7 +74,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
                         "get", url, **params
                     )
 
-                retrieve_method = "retrieve_%s" % resource
+                retrieve_method = "retrieve_%s" % resource_method_name
                 setattr(
                     cls, retrieve_method, classmethod(retrieve_nested_resource)
                 )
@@ -83,7 +87,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
                         "post", url, **params
                     )
 
-                modify_method = "modify_%s" % resource
+                modify_method = "modify_%s" % resource_method_name
                 setattr(
                     cls, modify_method, classmethod(modify_nested_resource)
                 )
@@ -96,7 +100,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
                         "delete", url, **params
                     )
 
-                delete_method = "delete_%s" % resource
+                delete_method = "delete_%s" % resource_method_name
                 setattr(
                     cls, delete_method, classmethod(delete_nested_resource)
                 )
@@ -109,7 +113,7 @@ def nested_resource_class_methods(resource, path=None, operations=None):
                         "get", url, **params
                     )
 
-                list_method = "list_%ss" % resource
+                list_method = "list_%ss" % resource_method_name
                 setattr(cls, list_method, classmethod(list_nested_resources))
 
             else:

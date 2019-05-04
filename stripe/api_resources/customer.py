@@ -16,6 +16,11 @@ from stripe.api_resources.abstract import nested_resource_class_methods
 @nested_resource_class_methods(
     "tax_id", operations=["create", "retrieve", "delete", "list"]
 )
+@nested_resource_class_methods(
+    "customer_balance_transaction",
+    operations=["create", "retrieve", "delete", "list"],
+    resource_method_name="transaction",
+)
 class Customer(
     CreateableAPIResource,
     UpdateableAPIResource,
